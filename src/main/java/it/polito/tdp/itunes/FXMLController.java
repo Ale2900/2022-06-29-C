@@ -5,7 +5,11 @@
 package it.polito.tdp.itunes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.itunes.model.Album;
+import it.polito.tdp.itunes.model.AlbumBilancio;
 import it.polito.tdp.itunes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +38,7 @@ public class FXMLController {
     private Button btnPercorso; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA1"
-    private ComboBox<?> cmbA1; // Value injected by FXMLLoader
+    private ComboBox<Album> cmbA1; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA2"
     private ComboBox<?> cmbA2; // Value injected by FXMLLoader
@@ -50,6 +54,17 @@ public class FXMLController {
 
     @FXML
     void doCalcolaAdiacenze(ActionEvent event) {
+    	Album scelto=this.cmbA1.getValue();
+    	if(scelto==null) {
+    		this.txtResult.appendText("Selezionare un album");
+    		return;
+    	}
+    	
+    	List<AlbumBilancio> bilanci=this.model.getBilanci(scelto);
+    	
+    	for(AlbumBilancio a: bilanci) {
+    		this.txtResult.appendText(a+"\n");
+    	}
     	
     }
 
@@ -60,6 +75,37 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	
+    	//prendi il numero/prezzo dalla casella di testo
+    	
+    	String prezzostringa=this.txtN.getText();
+    	if(prezzostringa.equals("")) {
+    		this.txtResult.appendText("Inserire un numero valido");
+    		return;
+    	}
+    	
+    	try {
+    		Double prezzo=Double.parseDouble(prezzostringa);
+    		
+    		//creo il grafo
+    		this.model.creaGrafo(prezzo); //LO POSSO CREARE QUI OPPURE FUORI, NON CAMBIA
+    		
+    		this.txtResult.appendText("Grafo creato con: \n");
+    		this.txtResult.appendText("#Vertici: "+ this.model.nVertici()+"\n");
+    		this.txtResult.appendText("#Archi: "+ this.model.nArchi()+"\n");
+    		
+    	}catch(NumberFormatException e) {
+    		e.printStackTrace();
+    		this.txtResult.appendText("Errore di lettura dell'input");
+    		return;
+    	}
+
+		//popolo la seconda tendina
+    	this.cmbA1.getItems().clear();
+    	this.cmbA1.getItems().addAll(this.model.getAlbums());
+		
+    	
+    	
     	
     }
 

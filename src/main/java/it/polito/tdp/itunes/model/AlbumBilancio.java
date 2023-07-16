@@ -24,7 +24,8 @@ public class AlbumBilancio implements Comparable<AlbumBilancio>{
 
 	@Override
 	public int compareTo(AlbumBilancio o) {
-		return o.bilancio.compareTo(bilancio);
+		return o.bilancio.compareTo(bilancio); //perchè il testo dice che i vertici adiacenti 
+		//a quello selezionato devono essere stampati in ordine decrescente di bilancio
 	}
 
 	@Override

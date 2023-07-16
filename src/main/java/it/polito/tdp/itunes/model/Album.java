@@ -1,13 +1,23 @@
 package it.polito.tdp.itunes.model;
 
-public class Album {
+public class Album implements Comparable<Album>{
 	private Integer albumId;
 	private String title;
+	private Double prezzo; //sto aggiungendo un attributo cosicche posso creare direttametne la lista risultatne di album 
 	
-	public Album(Integer albumId, String title) {
+	public Album(Integer albumId, String title, Double prezzo) {
 		super();
 		this.albumId = albumId;
 		this.title = title;
+		this.prezzo=prezzo;
+	}
+
+	public Double getPrezzo() {
+		return prezzo;
+	}
+
+	public void setPrezzo(Double prezzo) {
+		this.prezzo = prezzo;
 	}
 
 	public Integer getAlbumId() {
@@ -54,6 +64,12 @@ public class Album {
 	@Override
 	public String toString() {
 		return title;
+	}
+
+	@Override
+	public int compareTo(Album o) {
+		// TODO Auto-generated method stub
+		return this.getTitle().compareTo(o.getTitle());
 	}
 	
 	

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import it.polito.tdp.itunes.model.Album;
 import it.polito.tdp.itunes.model.Artist;
 import it.polito.tdp.itunes.model.Genre;
@@ -26,7 +28,7 @@ public class ItunesDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				result.add(new Album(res.getInt("AlbumId"), res.getString("Title")));
+				result.add(new Album(res.getInt("AlbumId"), res.getString("Title"), 0.0));
 			}
 			conn.close();
 		} catch (SQLException e) {
@@ -138,6 +140,38 @@ public class ItunesDAO {
 		}
 		return result;
 	}
+	
+	
+	
+	//QUERY PER I VERTICI: mi restituisce oggetti Album che hanno un prezzo superiore
+	public List<Album> getAlbumsByPrice(Double prezzo, Map<Integer, Album> albumIdMap){
+		String sql="SELECT t.AlbumId, t.Name, SUM(t.UnitPrice) AS prezzo "
+				+ "FROM track t, album a "
+				+ "WHERE t.AlbumId=a.AlbumId "
+				+ "GROUP BY t.AlbumId "
+				+ "HAVING prezzo>?";
+		
+		List<Album> result=new ArrayList<Album>();
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setDouble(1, prezzo);
+			
+			ResultSet res = st.executeQuery();
+			
+			while(res.next()) {
+				result.add(new Album(res.getInt("AlbumId"), res.getNString("Name"), res.getDouble("prezzo")));
+			}
+			
+			conn.close();
+			return result;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("SQL Error");
+		}
+	}
+	
+	
 	
 	
 }
